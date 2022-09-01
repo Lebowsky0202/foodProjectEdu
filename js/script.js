@@ -218,4 +218,49 @@ window.addEventListener('DOMContentLoaded', () => {
     card2.render();
     card3.render();
     
+    // Отправка формы на сервер
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'Загрузка',
+        success: 'Спасибо, скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так',
+    };
+
+    forms.forEach((item) => {
+        postData(item);
+    });
+
+    function postData(form){
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()  ;
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+            
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+            // request.setRequestHeader('Content-type', 'multipart/from-data');
+
+            const fromData = new FormData(form);
+
+            request.send(fromData);
+
+            request.addEventListener('load', () => {
+                if(request.status === 200){
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000)
+                }else{
+                    statusMessage.textContent = message.failure;
+                }
+            });
+        });
+    }
 });
