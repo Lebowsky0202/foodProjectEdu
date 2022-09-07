@@ -289,50 +289,45 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //slider
     const sliderItem = document.querySelectorAll('.offer__slide'),
-          sliderIndex = document.querySelector('#current'),
-          sliderTotal = document.querySelector('#total'),
-          sliderCounter = document.querySelector('.offer__slider-counter'),
           sliderPrev = document.querySelector('.offer__slider-prev'),
-          sliderNext = document.querySelector('.offer__slider-next');
+          sliderNext = document.querySelector('.offer__slider-next'),
+          total = document.querySelector('#total'),
+          current = document.querySelector('#current'); 
+    let sliderIndex = 1;
 
-    function hideSliders(sliders){
-        sliders.forEach(item => {
+    showSliders(sliderIndex);
+
+    if(sliderItem.length < 10){
+        total.textContent = `0${sliderItem.length}`;
+    }else{
+        total.textContent = sliderItem.length ;
+    }
+
+    function showSliders(n){
+        if(n > sliderItem.length){
+            sliderIndex = 1
+        }
+        if(n < 1){
+            sliderIndex = sliderItem.length;
+        }
+        sliderItem.forEach(item => {
             item.classList.add('hide');
             item.classList.remove('show');
         })
-    }
-    hideSliders(sliderItem);
-    console.log(sliderItem);
-
-    function showSlide(slide, index){
-        slide.forEach((item, i) => {
-            let newI = ++i;
-            if (newI == index){
-                item.classList.add('show');
-                item.classList.remove('hide');
-                sliderIndex.textContent = index;
-            }
-        })
+        sliderItem[sliderIndex - 1].classList.add('show'); 
+        sliderItem[sliderIndex - 1].classList.remove('hide');
+        if(sliderItem.length < 10){
+            current.textContent = `0${sliderIndex}`;
+        }else{
+            current.textContent = sliderIndex ;
+        }  
     }
 
-    showSlide(sliderItem, 1);
-    sliderCounter.addEventListener('click', e => {
-        const target = e.target;
+    function plusSlides(n){
+        showSliders(sliderIndex += n);
+    }
+    
+    sliderPrev.addEventListener('click', () => {plusSlides(-1)});
+    sliderNext.addEventListener('click', () => {plusSlides(+1)});
 
-
-        if(target == sliderNext || target.classList.contains('next')){
-            hideSliders(sliderItem);
-            showSlide(sliderItem, (+(sliderIndex.textContent) + 1));
-            console.log(target);
-            if(sliderIndex > sliderTotal){
-                showSlide(sliderItem, 1);
-            }
-        }else if (target == sliderPrev || target.classList.contains('prev')){
-            hideSliders(sliderItem);
-            showSlide(sliderItem, (+(sliderIndex.textContent) - 1));
-            if(sliderIndex < 1){
-                showSlide(sliderItem, sliderTotal);
-            }
-        }
-    })
 });
