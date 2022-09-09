@@ -384,7 +384,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     prev.addEventListener('click', () =>{
         if(offset == 0){
-            offset = +width.slice(0, width.length - 2) * (sliderItem.length - 1)
+            offset = +width.slice(0, width.length - 2) * (sliderItem.length - 1);
         }else{
             offset -= +width.slice(0, width.length - 2);
         }
@@ -403,6 +403,25 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         dots.forEach(dot => dot.style.opacity = '0.5');
         dots[sliderIndex - 1].style.opacity = 1;
+    });
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', e => {
+            const slideTo = e.target.getAttribute('data-slide-to');
+
+            sliderIndex = slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            slidesField.style.transform = `translateX(-${offset}px)`;
+
+            if(sliderItem.length < 10){
+                current.textContent = `0${sliderIndex}`;
+            }else{
+                current.textContent = sliderIndex;
+            }
+
+            dots.forEach(dot => dot.style.opacity = '0.5');
+            dots[sliderIndex - 1].style.opacity = 1;
+        });
     });
 
 });
